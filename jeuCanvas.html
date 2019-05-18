@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style type="text/css">
+        canvas{
+            border: 1px dashed gray;
+        }
+
+    </style>
+</head>
+<body>
+<h3 id="score">Score :00</h3>
+<canvas id="out" width="500" height="500"	></canvas>
+<script type="text/javascript">
+    const canvas=document.querySelector('canvas');
+    sc=document.getElementById('score');
+    ctx=canvas.getContext('2d');
+    //Animation
+    x=200;y=200;
+    vx=0;vy=0;
+    r=8;
+    xr=20;yr=440;hr=60;
+    circles1= new Array(13);
+    circles2= new Array(7);
+    score=0;
+
+    function setup() {
+        circles1=circles1.fill(0).map(_ => ({
+            x: Math.random()*(canvas.width-2*r)+r,
+            y:0,
+            note:5,
+            vx:Math.random()*5-2.5,
+            vy:Math.random()*5+2.5,
+        }));
+        circles2=circles2.fill(0).map(_ => ({
+            x: Math.random()*(canvas.width-2*r)+r,
+            y:0,
+            note:2,
+            vx:Math.random()*5-2.5,
+            vy:Math.random()*5+2.5,
+        }));
+
+    }
+    setup();
+    function update() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = "#00FF00";
+        drawCircles1();
+		ctx.fillStyle = "#FF0000";
+        drawCircles2();
+        drawRect();
+    }
+
+    function drawRect() {
+        ctx.beginPath();
+        ctx.fillStyle = "#0000F0";
+        ctx.fillRect(xr,yr,hr,12);
+        ctx.fill();
+    }
+    var i=10;
+
+    function drawCircles1() {
+    	i=0;
+        circles1.forEach(c=>{
+        	if(c.y>=yr && c.x>xr && c.x<xr+hr){  
+        	score=score+c.note;      		
+        		circles1.splice(i,1);
+        		sc.innerText=score;
+        	return;
+        	}
+            c.vx=(c.x-r<0 || c.x+r>canvas.width) ? c.vx=-c.vx:c.vx ;
+            //c.vy=(c.y-r<0 || c.y+r>canvas.height) ? c.vy=-c.vy:c.vy;
+            c.y=( c.y>canvas.height)?0+r:c.y+c.vy;                               
+            ctx.beginPath();
+            ctx.arc(c.x,c.y,r, 0, 2*Math.PI);
+            ctx.fill();
+            c.x+=c.vx;
+            i++;
+        })        
+    }
+        function drawCircles2() {
+        	i=0;
+        circles2.forEach(c=>{
+        	if(c.y>=yr && c.x>xr && c.x<xr+hr){  
+        	score=score+c.note;      		
+        		sc.innerText=score;
+        		circles2.splice(i,1);
+        	return;
+        	}
+            c.vx=(c.x-r<0 || c.x+r>canvas.width) ? c.vx=-c.vx:c.vx ;
+            //c.vy=(c.y-r<0 || c.y+r>canvas.height) ? c.vy=-c.vy:c.vy;
+            c.y=( c.y>canvas.height)?0+r:c.y+c.vy;                                          
+            ctx.beginPath();
+            ctx.arc(c.x,c.y,r, 0, 2*Math.PI);
+            ctx.fill();
+            c.x+=c.vx;
+            i++;
+        })        
+    }
+    document.addEventListener('keydown',(evt)=>{
+        console.log(evt);
+        if(evt.key == 'ArrowRight'){
+            xr+=10;
+        }
+        if(evt.key == 'ArrowLeft'){
+            xr-=10;
+        }
+    })
+
+
+    function loop() {
+        update();
+        requestAnimationFrame(loop)
+    }
+    loop()
+
+
+
+</script>
+
+
+</body>
+</html>

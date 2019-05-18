@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style type="text/css">
+        canvas{
+            border: 1px dashed gray;
+        }
+
+    </style>
+</head>
+<body>
+<h3 id="score">Score :00</h3>
+<canvas id="out" width="500" height="500"	></canvas>
+<script type="text/javascript">
+    const canvas=document.querySelector('canvas');
+    sc=document.getElementById('score');
+    ctx=canvas.getContext('2d');
+    //Animation
+
+    vx=1;vy=-2;
+    r=8;
+    xr=200;yr=440;hr=60;
+    cx=xr+(hr/2);cy=yr-r;
+    rectangles1= new Array(10);
+    rectangles2= new Array(9);
+    rectangles3= new Array(8);
+    score=0;
+
+    function setup() {
+        rectangles1=rectangles1.fill(0).map(_ => ({
+            note:5,
+        }));
+            rectangles2=rectangles2.fill(0).map(_ => ({
+            note:2,
+        }));
+      rectangles3=rectangles3.fill(0).map(_ => ({
+            note:1,
+        }));       
+    }
+    setup();
+    function drawCircle() {    
+      vx=(cx-r<0 || cx+r>canvas.width) ? -vx:vx ;
+      vy=(cy-r<0 || (cy+r>=yr && cy+r<=yr+5 && cx+r>xr && cx<xr+hr)) ? vy=-vy:vy;
+     if( cy>canvas.height){
+        sc.innerText="Game Over";
+    }                                      
+            ctx.beginPath();
+            ctx.arc(cx,cy,r,0, 2*Math.PI);
+            ctx.fill();
+            cx+=vx;
+            cy+=vy;                       
+    }
+    function update() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = "#F0FF0F";
+        drawCircle();
+        drawCircles1();
+        drawCircles2();
+        drawCircles3();
+        drawRect();
+    }
+
+    function drawRect() {
+        ctx.beginPath();
+        ctx.fillStyle = "#0000F0";
+        ctx.fillRect(xr,yr,hr,12);
+        ctx.fill();
+    }
+
+    function drawCircles1() {
+        i=0;j=0;
+        rectangles1.forEach(c=>{
+        if(cx+r>=i+60 && cx-r<=i+90 && cy<=42 &&cy>=30){
+            rectangles1.splice(j,1);
+            vy=-vy;
+            i=i+40;
+            return;
+        }
+
+            ctx.beginPath();
+            ctx.fillStyle = "#770000";
+            ctx.fillRect(i+60,30,30,12);
+            ctx.fill();
+            i=i+40;
+            j++;
+        })        
+    }
+       function drawCircles2() {
+        i=0;j=0;
+        rectangles2.forEach(c=>{                              
+         if(cx+r>=i+75 && cx-r<=i+105 && cy<=57 &&cy>=45){
+            rectangles2.splice(j,1);
+            vy=-vy;
+            i=i+40;
+            return;
+        }
+            ctx.beginPath();
+            ctx.fillStyle = "#FF0000";
+            ctx.fillRect(i+75,45,30,12);            
+            ctx.fill();
+            i=i+40;
+            j++;
+        })        
+    }
+    function drawCircles3() {
+        i=0;j=0;
+
+        rectangles3.forEach(c=>{                              
+        if(cx+r>=i+90 && cx-r<=i+120 && cy<=72 &&cy>=60){
+            rectangles3.splice(j,1);
+            vy=-vy;
+            i=i+40;
+            return;
+        }
+            ctx.beginPath();
+            ctx.fillStyle = "#411960";
+            ctx.fillRect(i+90,60,30,12);
+            ctx.fill();
+            i=i+40;
+            j++;
+        })        
+    }
+    document.addEventListener('keydown',(evt)=>{
+        console.log(evt);
+        if(evt.key == 'ArrowRight'){
+            xr+=10;
+        }
+        if(evt.key == 'ArrowLeft'){
+            xr-=10;
+        }
+    })
+
+
+    function loop() {
+        update();
+        requestAnimationFrame(loop)
+    }
+    loop()
+
+
+
+</script>
+
+
+</body>
+</html>
